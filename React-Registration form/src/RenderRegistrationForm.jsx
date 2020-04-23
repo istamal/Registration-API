@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, Select } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -27,6 +27,15 @@ const Form = styled.form`
 	}
 `;
 
+const Success = styled.div`
+	text-align: center;
+	width: 300px;
+	padding: 30px;
+	border-radius: 3px;
+	box-shadow: 0 0 5px 5px rgba(130, 100, 170, .1); 
+	margin: 10vh auto;
+`;
+
 const Button = styled.button`
 	padding: 5px 10px;
 	border-radius: 3px;
@@ -42,6 +51,8 @@ const Button = styled.button`
 `;
 
 const RenderRegistrationForm = () => {
+	const [isSuccess, setIsSaccess] = useState(false);
+	const [emailError, setEmailError] = useState(false);
 	const formik = useFormik({
 		initialValues: {
 			name: "",
@@ -52,11 +63,19 @@ const RenderRegistrationForm = () => {
 			age: "",
 			skills: "",
 		},
-		onSubmit: (values, { setSubmitting }) => {
-			setTimeout(() => {
-				axios.post('http://localhost:5000/sign-up', values)
-				.then((responce) => console.log(responce.data));
-			});
+		onSubmit: (values, { setSubmitting, setFieldError }) => {
+			axios.post('http://localhost:5000/sign-up', values)
+			.then((responce) => {
+				if (responce.data.userAded) {
+					setIsSaccess(!isSuccess);
+					setEmailError(false);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+				setFieldError('email', 'Такой эмайл уже привязанно к другому аккаунту')
+			})
+			.finally(() => setSubmitting(false));
 		},
 		validationSchema: Yup.object().shape({
 			name: Yup.string()
@@ -84,10 +103,20 @@ const RenderRegistrationForm = () => {
 		handleChange,
 		handleBlur,
 		handleSubmit,
+		resetForm,
 	} = formik;		
 
 	return (
-		<Form autoComplete="off" onSubmit={handleSubmit}>
+		isSuccess === true
+		? <Success>
+				<p>Вы успешно зарегистрированы.</p>
+				<Button onClick={() => {
+					setIsSaccess(!isSuccess);
+					return resetForm();
+					}
+				}>ok</Button>
+			</Success>
+		: <Form autoComplete="off" onSubmit={handleSubmit}>
 			<div style={{ marginBottom: 16 }}>
 				<Input placeholder="Имя"
 					value={values.name}
@@ -168,7 +197,7 @@ const RenderRegistrationForm = () => {
 					onChange={handleChange}
 				/>
 			</div>
-			<Button type="submit" disabled={isSubmitting}>Регистрация</Button>
+			<Button type="submit">Регистрация</Button>
 		</Form>
 	)
 };

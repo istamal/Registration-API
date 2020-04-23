@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const createError = require('http-errors');
 
 const users = [];
 
@@ -18,13 +19,10 @@ router.post('/', (req, res, next) => {
 		age: req.body.age,
 		skills: req.body.skills,
 	};
-	const isEmail = users.find((item) => item.email === req.body.eamil);
+	const isEmail = users.find((item) => item.email === req.body.email);
 
 	if (isEmail) {
-		res.status(200).json({
-			message: 'Эмайл уже занят.',
-			userAded: users,
-		});
+		throw createError(402, `Эмайл '${req.body.email}' уже занято`);
 	} else {
 		users.push(user);
 		res.status(200).json({

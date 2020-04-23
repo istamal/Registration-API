@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const createError = require('http-errors');
 const app = express();
 
 const signUpRoutes = require('./api/routes/sign-up');
