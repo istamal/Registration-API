@@ -1,12 +1,10 @@
 import React from 'react';
 import './App.scss';
 import 'antd/dist/antd.css';
-import RenderRegistrationForm from './RenderRegistrationForm';
+import RenderForm from './RenderForm';
 
 function App() {
-  return (
-    <RenderRegistrationForm />
-  );
+  return <RenderForm />;
 }
 
 export default App;
