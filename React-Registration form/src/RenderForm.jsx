@@ -67,7 +67,7 @@ const schema = Yup.object().shape({
   password: Yup.string()
     .required('Вы не написали пароль')
     .min(8, 'Должно быть не менее 8 символов')
-    .matches(/(?=.*[0-9])/, 'Пароль должень содержать хотя бы одну цифру и заглавную букву')
+    .matches(/(?=.*[0-9])/, 'Пароль должень содержать хотя бы одну цифру')
     .matches(/(?=.*[a-z])/, 'Пароль должень содержать хотя бы одну букву латинского алфавита')
     .matches(
       /(?=.*[A-Z])/,
@@ -94,7 +94,7 @@ const schema = Yup.object().shape({
           .required('Обязательное поле'), // these constraints take precedence
       }),
     )
-    .required('Must have skills'),
+    .required('Нужно добавить хотябы один навык'),
   acceptTerms: Yup.bool().oneOf(
     [true],
     'Нужно принять условия регламента политики конфиденциальности',
