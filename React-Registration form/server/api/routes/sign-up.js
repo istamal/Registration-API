@@ -1,11 +1,11 @@
 const express = require('express');
-const { check, body, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 const router = express.Router();
 
 const users = [];
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   res.status(200).json({
     message: 'handlin Get request to /sign-up',
   });
@@ -25,7 +25,7 @@ router.post(
       .withMessage('Пароль должен содержать латинские строчные и заглавные буквы и цифры'),
     check('passwordConfirmation', 'Необходимо внести пароль')
       .isLength({ min: 8 })
-      .custom((val, { req, log, path }) => {
+      .custom((val, { req }) => {
         if (val !== req.body.password) {
           throw new Error('Пароли не совподают');
         } else {
@@ -55,7 +55,7 @@ router.post(
       .isEmpty()
       .withMessage('Необходимо написать хотябы один навык'),
   ],
-  (req, res, next) => {
+  (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(433).json({ errors: errors.array() });
@@ -70,7 +70,6 @@ router.post(
       skills: req.body.skills,
     };
     users.push(user);
-    console.log(users);
     return res.status(200).json({
       message: 'Вы успешно зарегистрированы.',
       userAded: users,

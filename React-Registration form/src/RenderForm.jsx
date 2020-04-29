@@ -8,11 +8,12 @@ import {
 import * as Yup from 'yup';
 import axios from 'axios';
 import cn from 'classnames';
+import uniqueId from 'lodash';
 
 const AddButton = styled.button`
   padding: 0 5px;
   border-radius: 2px;
-  color: rgba(0, 20, 255, 0.8);
+  color: rgba(0, 110, 255, 0.8);
   border: 1px solid transparent;
   cursor: pointer;
   background: none;
@@ -94,7 +95,10 @@ const schema = Yup.object().shape({
       }),
     )
     .required('Must have skills'),
-  acceptTerms: Yup.boolean(),
+  acceptTerms: Yup.bool().oneOf(
+    [true],
+    'Нужно принять условия регламента политики конфиденциальности',
+  ),
 });
 
 const RenderRegistrationForm = () => {
@@ -143,14 +147,9 @@ const RenderRegistrationForm = () => {
       }}
       validationSchema={schema}
       onSubmit={submit}
-      render={({
-        values,
-        touched,
-        errors,
-        isSubmitting,
-        handleChange,
-        handleBlur,
-        handleSubmit,
+    >
+      {({
+        values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit,
       }) => (
         <Form className="form" onSubmit={handleSubmit}>
           <div className="marginBottom">
@@ -175,7 +174,7 @@ const RenderRegistrationForm = () => {
               className={errors.password && touched.password && 'error'}
             />
             {errors.password && touched.password && (
-              <div className="input-feedback">{errors.password}</div>
+            <div className="input-feedback">{errors.password}</div>
             )}
           </div>
           <div className="marginBottom">
@@ -188,7 +187,7 @@ const RenderRegistrationForm = () => {
               className={errors.passwordConfirmation && touched.passwordConfirmation && 'error'}
             />
             {errors.passwordConfirmation && touched.passwordConfirmation && (
-              <div className="input-feedback">{errors.passwordConfirmation}</div>
+            <div className="input-feedback">{errors.passwordConfirmation}</div>
             )}
           </div>
           <div className="marginBottom">
@@ -214,7 +213,7 @@ const RenderRegistrationForm = () => {
               className={errors.website && touched.website && 'error'}
             />
             {errors.website && touched.website && (
-              <div className="input-feedback">{errors.website}</div>
+            <div className="input-feedback">{errors.website}</div>
             )}
           </div>
           <div className="marginBottom">
@@ -242,18 +241,22 @@ const RenderRegistrationForm = () => {
                     error: errorMessage && touched.skills,
                   });
                   return (
-                    <div className="marginBottom">
+                    <div key={uniqueId()} className="marginBottom">
                       <Field name={name} placeholder="Навыки" className={classList} />
                       <DeleteButton type="button" onClick={() => arrayHelpers.remove(index)}>
-                        X
+                  X
                       </DeleteButton>
                       {errorMessage && touched.skills && (
-                        <div className="input-feedback">{errorMessage}</div>
-                      )}
+                <div className="input-feedback">{errorMessage}</div>
+                )}
                     </div>
                   );
                 })}
-                <AddButton type="button" onClick={() => arrayHelpers.push('')}>
+                <AddButton
+                  className="marginBottom"
+                  type="button"
+                  onClick={() => arrayHelpers.push('')}
+                >
                   + Добавить навык
                 </AddButton>
               </div>
@@ -264,20 +267,20 @@ const RenderRegistrationForm = () => {
               name="acceptTerms"
               checked={values.acceptTerms}
               onChange={handleChange}
-              className={errors.acceptTerms && touched.acceptTerms && 'error'}
+              className={errors.acceptTerms && touched.acceptTerms ? ' error' : ''}
             >
-              Я принемаю условия
+              Я принемаю условия регламента политики конфиденциальности
             </Checkbox>
-          </div>
-          {errors.acceptTerms && touched.acceptTerms && (
+            {errors.acceptTerms && touched.acceptTerms && (
             <div className="input-feedback">{errors.acceptTerms}</div>
-          )}
+            )}
+          </div>
           <Button type="submit" disabled={isSubmitting}>
             Регистрация
           </Button>
         </Form>
       )}
-    />
+    </Formik>
   );
 };
 
