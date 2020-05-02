@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Input, Checkbox } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import {
-  Formik, Form, Field, FieldArray, getIn,
-} from 'formik';
+import { Formik, Form, Field, FieldArray, getIn } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import cn from 'classnames';
@@ -81,7 +79,7 @@ const schema = Yup.object().shape({
     .required('Обязательное поле'),
   website: Yup.string()
     .required('Обязательное поле')
-    .url(),
+    .url('Адресс веб сайта написанно не правильно'),
   age: Yup.number()
     .required('Обязательное поле')
     .min(18, 'Вам должно быть не менее 18')
@@ -148,9 +146,7 @@ const RenderRegistrationForm = () => {
       validationSchema={schema}
       onSubmit={submit}
     >
-      {({
-        values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit,
-      }) => (
+      {({ values, touched, errors, isSubmitting, handleChange, handleBlur, handleSubmit }) => (
         <Form className="form" onSubmit={handleSubmit}>
           <div className="marginBottom">
             <Input
@@ -174,7 +170,7 @@ const RenderRegistrationForm = () => {
               className={errors.password && touched.password && 'error'}
             />
             {errors.password && touched.password && (
-            <div className="input-feedback">{errors.password}</div>
+              <div className="input-feedback">{errors.password}</div>
             )}
           </div>
           <div className="marginBottom">
@@ -187,7 +183,7 @@ const RenderRegistrationForm = () => {
               className={errors.passwordConfirmation && touched.passwordConfirmation && 'error'}
             />
             {errors.passwordConfirmation && touched.passwordConfirmation && (
-            <div className="input-feedback">{errors.passwordConfirmation}</div>
+              <div className="input-feedback">{errors.passwordConfirmation}</div>
             )}
           </div>
           <div className="marginBottom">
@@ -213,7 +209,7 @@ const RenderRegistrationForm = () => {
               className={errors.website && touched.website && 'error'}
             />
             {errors.website && touched.website && (
-            <div className="input-feedback">{errors.website}</div>
+              <div className="input-feedback">{errors.website}</div>
             )}
           </div>
           <div className="marginBottom">
@@ -244,11 +240,11 @@ const RenderRegistrationForm = () => {
                     <div key={uniqueId()} className="marginBottom">
                       <Field name={name} placeholder="Навыки" className={classList} />
                       <DeleteButton type="button" onClick={() => arrayHelpers.remove(index)}>
-                  X
+                        X
                       </DeleteButton>
                       {errorMessage && touched.skills && (
-                <div className="input-feedback">{errorMessage}</div>
-                )}
+                        <div className="input-feedback">{errorMessage}</div>
+                      )}
                     </div>
                   );
                 })}
@@ -272,7 +268,7 @@ const RenderRegistrationForm = () => {
               Я принемаю условия регламента политики конфиденциальности
             </Checkbox>
             {errors.acceptTerms && touched.acceptTerms && (
-            <div className="input-feedback">{errors.acceptTerms}</div>
+              <div className="input-feedback">{errors.acceptTerms}</div>
             )}
           </div>
           <Button type="submit" disabled={isSubmitting}>
